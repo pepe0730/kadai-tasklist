@@ -36,12 +36,26 @@ public class IndexServlet extends HttpServlet {
         // TODO Auto-generated method stub
         EntityManager em = DBUtil.createEntityManager();
 
-        List <Task> tasks = em.createNamedQuery("getAllTasks", Task.class).getResultList();
-        response.getWriter().append(Integer.valueOf(tasks.size()).toString());
+        int page = 1;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {}
+
+        //最大件数と開始位置を指定 + タスクを取得 Listのためデータの先頭は0から。
+        List <Task> tasks = em.createNamedQuery("getAllTasks", Task.class)
+                              .setFirstResult(15 * (page - 1))
+                              .setMaxResults(15)
+                              .getResultList();
+
+
+        long tasks_count = (long)em.createNamedQuery("getTasksCount", Long.class).getSingleResult();
 
         em.close();
 
         request.setAttribute("tasks", tasks);
+        request.setAttribute("tasks_count", tasks_count);
+        request.setAttribute("page", page);
+
 
         if(request.getSession().getAttribute("flush") != null) {
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
