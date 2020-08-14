@@ -13,7 +13,7 @@
                     <tbody>
                         <tr>
                             <th>タスク</th>
-                            <td><c:out value="${tasl.content}" /></td>
+                            <td><c:out value="${task.content}" /></td>
                         </tr>
 
                         <tr>
